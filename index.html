@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>El Concepto Abstracto de Computadora - EBI ANEP</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts: Space Grotesk & Inter -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap">
+  
+  <!-- FontAwesome 6.5.1 Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Space Grotesk', 'sans-serif'],
+          },
+          colors: {
+            ceibal: {
+              bg: '#020617',
+              card: 'rgba(15, 23, 42, 0.75)',
+              border: 'rgba(51, 65, 85, 0.6)',
+              cyan: '#38bdf8',
+              purple: '#a855f7',
+              neon: '#22c55e',
+              amber: '#f59e0b',
+              rose: '#f43f5e'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom Glassmorphism Styles */
+    .glass-card {
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(51, 65, 85, 0.5);
+    }
+    
+    .glass-card-interactive {
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(51, 65, 85, 0.4);
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .glass-card-interactive:hover {
+      border-color: rgba(56, 189, 248, 0.6);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px -5px rgba(56, 189, 248, 0.15);
+    }
+
+    .slide {
+      display: none;
+      opacity: 0;
+      transition: opacity 0.35s ease-in-out;
+    }
+    
+    .slide.active {
+      display: flex;
+      opacity: 1;
+    }
+
+    /* Pulse animation for flow diagram nodes */
+    @keyframes nodeGlow {
+      0%, 100% { box-shadow: 0 0 12px rgba(56, 189, 248, 0.3); }
+      50% { box-shadow: 0 0 24px rgba(56, 189, 248, 0.7); }
+    }
+    
+    .node-glow {
+      animation: nodeGlow 2.5s infinite ease-in-out;
+    }
+
+    /* Custom Scrollbars */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #020617; }
+    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #475569; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans h-full flex flex-col justify-between overflow-hidden select-none bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-black">
+
+  <!-- TOP HEADER / PROGRESS BAR -->
+  <header class="w-full bg-slate-950/80 backdrop-blur-md border-b border-slate-800/80 px-6 py-3.5 flex justify-between items-center z-50">
+    <div class="flex items-center gap-3">
+      <div class="bg-sky-500/10 text-sky-400 p-2.5 rounded-xl border border-sky-500/20 shadow-lg shadow-sky-500/10">
+        <i class="fa-solid fa-microchip text-xl"></i>
+      </div>
+      <div>
+        <span class="text-[11px] uppercase font-bold tracking-widest text-sky-400 block">8vo Año EBI • Ciencias de la Computación</span>
+        <h1 class="text-sm sm:text-base font-bold font-display text-white">Unidad III: El Concepto Abstracto de Computadora</h1>
+      </div>
+    </div>
+
+    <!-- Slide Indicators & Progress Bar -->
+    <div class="flex items-center gap-5">
+      <span id="slide-number" class="font-mono text-xs font-semibold bg-slate-900/90 px-3.5 py-1.5 rounded-full border border-slate-700/80 text-sky-300 shadow-inner">
+        Slide 1 de 9
+      </span>
+      <div class="w-32 sm:w-52 bg-slate-900 h-2.5 rounded-full overflow-hidden border border-slate-800 p-0.5">
+        <div id="progress-bar" class="bg-gradient-to-r from-sky-400 via-purple-500 to-emerald-400 h-full w-1/9 transition-all duration-300 rounded-full"></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN SLIDES CONTAINER -->
+  <main class="flex-grow relative flex items-center justify-center p-3 sm:p-6 max-w-7xl mx-auto w-full h-[calc(100vh-130px)]">
+
+    <!-- SLIDE 1: PORTADA -->
+    <div class="slide active flex-col justify-center items-start w-full h-full glass-card rounded-3xl p-8 sm:p-14 relative overflow-hidden shadow-2xl border border-slate-800">
+      <div class="absolute -right-16 -top-16 w-96 h-96 bg-sky-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -left-16 -bottom-16 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="mb-5 flex flex-wrap gap-2.5">
+        <span class="bg-sky-500/10 text-sky-400 border border-sky-500/30 text-xs px-3.5 py-1.5 rounded-full font-semibold flex items-center gap-2">
+          <i class="fa-solid fa-graduation-cap"></i> EBI Uruguay - ANEP / Ceibal
+        </span>
+        <span class="bg-purple-500/10 text-purple-400 border border-purple-500/30 text-xs px-3.5 py-1.5 rounded-full font-semibold flex items-center gap-2">
+          <i class="fa-solid fa-sitemap"></i> Modelo E-P-A-S
+        </span>
+      </div>
+
+      <h2 class="font-display text-4xl sm:text-6xl font-extrabold text-white leading-tight mb-4 max-w-4xl tracking-tight">
+        El Concepto Abstracto de <span class="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 via-purple-400 to-emerald-400">Computadora</span>
+      </h2>
+
+      <p class="text-slate-300 text-lg sm:text-xl max-w-3xl mb-8 leading-relaxed font-light">
+        Más allá de cables, teclados o pantallas: descubre cómo los sistemas digitales procesan la información mediante el ciclo universal de <b class="text-sky-300">Entrada</b>, <b class="text-purple-300">Procesamiento</b>, <b class="text-amber-300">Almacenamiento</b> y <b class="text-emerald-300">Salida</b>.
+      </p>
+
+      <div class="flex flex-wrap gap-4 items-center">
+        <button onclick="nextSlide()" class="bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-slate-950 font-bold px-7 py-4 rounded-2xl transition-all flex items-center gap-3 shadow-lg shadow-sky-500/25 active:scale-95 text-base">
+          <span>Iniciar Lección Interactiva</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+        <span class="text-xs text-slate-400 flex items-center gap-2 bg-slate-900/60 px-3.5 py-2 rounded-xl border border-slate-800">
+          <i class="fa-solid fa-keyboard text-sky-400"></i> Usa las flechas [←] [→] del teclado
+        </span>
+      </div>
+    </div>
+
+    <!-- SLIDE 2: DESMITIFICANDO LA COMPUTADORA (EXPLORADOR DE DISPOSITIVOS) -->
+    <div class="slide flex-col justify-between w-full h-full glass-card rounded-3xl p-6 sm:p-10 overflow-y-auto">
+      <div>
+        <span class="text-xs font-bold text-sky-400 uppercase tracking-widest block mb-1">Abstracción Informática</span>
+        <h2 class="text-2xl sm:text-3xl font-bold font-display text-white">Desmitificando la "Computadora"</h2>
+        <p class="text-slate-300 text-xs sm:text-sm mt-1">Una computadora <b>no es solo una laptop o PC de escritorio</b>. Es cualquier dispositivo capaz de recibir datos, ejecutarlos bajo un algoritmo, almacenarlos y dar una respuesta.</p>
+      </div>
+
+      <!-- Interactive Device Explorer -->
+      <div class="my-4">
+        <span class="text-xs text-slate-400 font-medium mb-3 block flex items-center gap-1.5">
+          <i class="fa-solid fa-hand-pointer text-sky-400"></i> Haz clic en cada dispositivo para analizar su modelo abstracto E-P-A-S:
+        </span>
+        
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+          
+          <button onclick="selectDevice('smartphone')" id="dev-smartphone" class="dev-btn glass-card-interactive p-3.5 rounded-2xl text-center flex flex-col items-center gap-2 border-sky-500">
+            <i class="fa-solid fa-mobile-screen-button text-2xl text-sky-400"></i>
+            <span class="text-xs font-bold text-white">Smartphone</span>
+          </button>
+
+          <button onclick="selectDevice('microbit')" id="dev-microbit" class="dev-btn glass-card-interactive p-3.5 rounded-2xl text-center flex flex-col items-center gap-2">
+            <i class="fa-solid fa-microchip text-2xl text-purple-400"></i>
+            <span class="text-xs font-bold text-white">Micro:bit</span>
+          </button>
+
+          <button onclick="selectDevice('smartwatch')" id="dev-smartwatch" class="dev-btn glass-card-interactive p-3.5 rounded-2xl text-center flex flex-col items-center gap-2">
+            <i class="fa-solid fa-clock text-2xl text-emerald-400"></i>
+            <span class="text-xs font-bold text-white">Smartwatch</span>
+          </button>
+
+          <button onclick="selectDevice('traffic')" id="dev-traffic" class="dev-btn glass-card-interactive p-3.5 rounded-2xl text-center flex flex-col items-center gap-2">
+            <i class="fa-solid fa-traffic-light text-2xl text-amber-400"></i>
+            <span class="text-xs font-bold text-white">Semáforo Smart</span>
+          </button>
+
+          <button onclick="selectDevice('console')" id="dev-console" class="dev-btn glass-card-interactive p-3.5 rounded-2xl text-center flex flex-col items-center gap-2">
+            <i class="fa-solid fa-gamepad text-2xl text-rose-400"></i>
+            <span class="text-xs font-bold text-white">Consola Juegos</span>
+          </button>
+
+          <button onclick="selectDevice('washer')" id="dev-washer" class="dev-btn glass-card-interactive p-3.5 rounded-2xl text-center flex flex-col items-center gap-2">
+            <i class="fa-solid fa-soap text-2xl text-cyan-400"></i>
+            <span class="text-xs font-bold text-white">Lavarropas Smart</span>
+          </button>
+
+        </div>
+      </div>
+
+      <!-- Device Breakdown Output Box -->
+      <div id="device-info-box" class="bg-slate-900/90 border border-slate-700/80 p-4 sm:p-5 rounded-2xl">
+        <!-- Default content replaced dynamically via JavaScript -->
+      </div>
+    </div>
+
+    <!-- SLIDE 3: BLOQUE 1 - ENTRADA DE DATOS (INPUT) -->
+    <div class="slide flex-col justify-between w-full h-full glass-card rounded-3xl p-6 sm:p-10 overflow-y-auto">
+      <div>
+        <span class="text-xs font-bold text-sky-400 uppercase tracking-widest block mb-1">Bloque 01 del Modelo</span>
+        <h2 class="text-2xl sm:text-3xl font-bold font-display text-white flex items-center gap-3">
+          <i class="fa-solid fa-right-to-bracket text-sky-400"></i> Entrada de Datos (Input)
+        </h2>
+        <p class="text-slate-300 text-xs sm:text-sm mt-1">Es el puente de entrada entre el mundo físico analógico y el universo digital de la computadora.</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-5 my-3">
+        <!-- Left: Peripherals and Sensors -->
+        <div class="space-y-3">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">¿De dónde provienen los datos?</h3>
+          
+          <div class="bg-slate-900/80 p-3.5 rounded-2xl border border-slate-800 flex items-center gap-3">
+            <div class="p-2.5 bg-sky-500/20 text-sky-400 rounded-xl"><i class="fa-solid fa-keyboard text-lg"></i></div>
+            <div>
+              <h4 class="font-bold text-xs sm:text-sm text-white">Periféricos de Entrada Manual</h4>
+              <p class="text-[11px] text-slate-400">Teclados, pantallas táctiles, mouse, micrófonos y botones.</p>
+            </div>
+          </div>
+
+          <div class="bg-slate-900/80 p-3.5 rounded-2xl border border-slate-800 flex items-center gap-3">
+            <div class="p-2.5 bg-sky-500/20 text-sky-400 rounded-xl"><i class="fa-solid fa-tower-broadcast text-lg"></i></div>
+            <div>
+              <h4 class="font-bold text-xs sm:text-sm text-white">Sensores Ambientales (IoT)</h4>
+              <p class="text-[11px] text-slate-400">Acelerómetros, cámaras, giroscopios, sensores de luz y temperatura.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Analog to Digital Conversion -->
+        <div class="bg-slate-900/90 border border-slate-800 p-4 sm:p-5 rounded-2xl flex flex-col justify-between">
+          <div>
+            <h3 class="text-xs font-bold uppercase tracking-wider text-sky-400 mb-2 flex items-center gap-2">
+              <i class="fa-solid fa-bolt"></i> Conversión Analógico-Digital (ADC)
+            </h3>
+            <p class="text-xs text-slate-300 leading-relaxed mb-3">
+              El mundo real es continuo (sonido, luz, presión). Los dispositivos de entrada convierten esas magnitudes físicas en <b>código binario (0s y 1s)</b> que el procesador comprende.
+            </p>
+          </div>
+
+          <!-- Interactive Binary Converter Widget -->
+          <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 text-center">
+            <span class="text-[11px] text-slate-400 block mb-1">Simulación de lectura del sensor de luz:</span>
+            <div class="flex justify-center items-center gap-2 my-2">
+              <input type="range" min="0" max="255" value="128" id="light-range" oninput="updateBinaryConverter(this.value)" class="w-full accent-sky-400 cursor-pointer">
+            </div>
+            <div class="flex justify-between items-center text-xs font-mono pt-1">
+              <span class="text-slate-400">Valor Sensor: <b id="adc-val" class="text-sky-400">128</b></span>
+              <span class="text-slate-400">Binario: <b id="adc-bin" class="text-emerald-400">10000000</b></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-3 bg-sky-500/10 border border-sky-500/30 rounded-xl text-xs text-sky-300 flex items-center gap-2">
+        <i class="fa-solid fa-circle-info text-base"></i>
+        <span><b>Sin entrada de datos</b>, una computadora no tendría sobre qué operar ni sabría qué instrucciones ejecutar.</span>
+      </div>
+    </div>
+
+    <!-- SLIDE 4: BLOQUE 2 - PROCESAMIENTO (CPU) -->
+    <div class="slide flex-col justify-between w-full h-full glass-card rounded-3xl p-6 sm:p-10 overflow-y-auto">
+      <div>
+        <span class="text-xs font-bold text-purple-400 uppercase tracking-widest block mb-1">Bloque 02 del Modelo</span>
+        <h2 class="text-2xl sm:text-3xl font-bold font-display text-white flex items-center gap-3">
+          <i class="fa-solid fa-microchip text-purple-400"></i> Procesamiento (CPU / El Cerebro)
+        </h2>
+        <p class="text-slate-300 text-xs sm:text-sm mt-1">Donde los datos crudos se transforman en información con sentido mediante algoritmos.</p>
+      </div>
+
+      <!-- CPU Internal Architecture Grid -->
+      <div class="grid sm:grid-cols-3 gap-4 my-3">
+        
+        <!-- ALU -->
+        <div class="bg-slate-900/80 border border-purple-500/30 p-4 rounded-2xl">
+          <div class="w-9 h-9 bg-purple-500/20 text-purple-400 rounded-xl flex items-center justify-center font-bold mb-3">
+            <i class="fa-solid fa-calculator"></i>
+          </div>
+          <h3 class="font-bold text-sm text-white mb-1">Unidad Aritmético-Lógica (ALU)</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            Efectúa operaciones matemáticas (sumas, restas) y comparaciones lógicas (<i class="text-purple-300 font-mono">SI A > B</i>).
+          </p>
+        </div>
+
+        <!-- Control Unit -->
+        <div class="bg-slate-900/80 border border-purple-500/30 p-4 rounded-2xl">
+          <div class="w-9 h-9 bg-purple-500/20 text-purple-400 rounded-xl flex items-center justify-center font-bold mb-3">
+            <i class="fa-solid fa-diagram-next"></i>
+          </div>
+          <h3 class="font-bold text-sm text-white mb-1">Unidad de Control (UC)</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            Dirige el tráfico de datos: interpreta las instrucciones del programa y le indica a cada componente qué hacer.
+          </p>
+        </div>
+
+        <!-- Registers / Clock -->
+        <div class="bg-slate-900/80 border border-purple-500/30 p-4 rounded-2xl">
+          <div class="w-9 h-9 bg-purple-500/20 text-purple-400 rounded-xl flex items-center justify-center font-bold mb-3">
+            <i class="fa-solid fa-gauge-high"></i>
+          </div>
+          <h3 class="font-bold text-sm text-white mb-1">Reloj y Registros</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            Sincroniza la ejecución. Un procesador moderno ejecuta <b>miles de millones de operaciones por segundo (GHz)</b>.
+          </p>
+        </div>
+
+      </div>
+
+      <!-- Interactive Concept Widget -->
+      <div class="bg-slate-900/90 border border-slate-800 p-4 rounded-2xl flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <div class="p-3 bg-purple-500/20 text-purple-400 rounded-xl"><i class="fa-solid fa-gear text-xl"></i></div>
+          <div>
+            <h4 class="font-bold text-xs sm:text-sm text-white">¿Cómo piensa la CPU?</h4>
+            <p class="text-[11px] text-slate-400">Solo ejecuta un ciclo ininterrumpido: <b>Buscar instrucción ➔ Decodificar ➔ Ejecutar</b>.</p>
+          </div>
+        </div>
+        <span class="text-xs font-mono bg-purple-950 text-purple-300 px-3 py-1.5 rounded-lg border border-purple-800">
+          Ciclo de Instrucción (Fetch-Decode-Execute)
+        </span>
+      </div>
+    </div>
+
+    <!-- SLIDE 5: BLOQUE 3 - ALMACENAMIENTO (RAM VS NO VOLÁTIL) -->
+    <div class="slide flex-col justify-between w-full h-full glass-card rounded-3xl p-6 sm:p-10 overflow-y-auto">
+      <div>
+        <span class="text-xs font-bold text-amber-400 uppercase tracking-widest block mb-1">Bloque 03 del Modelo</span>
+        <h2 class="text-2xl sm:text-3xl font-bold font-display text-white flex items-center gap-3">
+          <i class="fa-solid fa-database text-amber-400"></i> Almacenamiento de Información
+        </h2>
+        <p class="text-slate-300 text-xs sm:text-sm mt-1">Sin memoria, el procesador olvidaría las instrucciones y los datos al instante.</p>
+      </div>
+
+      <!-- Interactive RAM vs Storage Comparison Table -->
+      <div class="my-3 overflow-x-auto">
+        <table class="w-full text-left text-xs border-collapse">
+          <thead>
+            <tr class="border-b border-slate-700 text-slate-300">
+              <th class="p-2.5 font-bold">Característica</th>
+              <th class="p-2.5 font-bold text-amber-400 bg-amber-500/10 rounded-t-lg">Memoria Principal (RAM) - Volátil</th>
+              <th class="p-2.5 font-bold text-emerald-400 bg-emerald-500/10 rounded-t-lg">Almacenamiento Secundario (SSD/Flash) - No Volátil</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-800 text-slate-300">
+            <tr>
+              <td class="p-2.5 font-semibold text-white">Función Principal</td>
+              <td class="p-2.5 bg-amber-500/5">Espacio de trabajo rápido mientras la app se ejecuta.</td>
+              <td class="p-2.5 bg-emerald-500/5">Guardar archivos, fotos, programas y el sistema operativo.</td>
+            </tr>
+            <tr>
+              <td class="p-2.5 font-semibold text-white">Permanencia de Datos</td>
+              <td class="p-2.5 bg-amber-500/5 text-amber-300 font-semibold"><i class="fa-solid fa-bolt"></i> Se borra al apagar el dispositivo.</td>
+              <td class="p-2.5 bg-emerald-500/5 text-emerald-300 font-semibold"><i class="fa-solid fa-floppy-disk"></i> Permanece guardado permanentemente.</td>
+            </tr>
+            <tr>
+              <td class="p-2.5 font-semibold text-white">Velocidad de Lectura</td>
+              <td class="p-2.5 bg-amber-500/5">Ultra rápida (directamente conectada a la CPU).</td>
+              <td class="p-2.5 bg-emerald-500/5">Moderada / Rápida (más lenta que la RAM).</td>
+            </tr>
+            <tr>
+              <td class="p-2.5 font-semibold text-white">Ejemplo Cotidiano</td>
+              <td class="p-2.5 bg-amber-500/5">Las pestañas abiertas en el navegador o el juego activo.</td>
+              <td class="p-2.5 bg-emerald-500/5">Tus fotos de la galería o videos guardados.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="p-3 bg-amber-500/10 border border-amber-500/30 rounded-xl text-xs text-amber-300 flex items-center gap-2">
+        <i class="fa-solid fa-triangle-exclamation text-base"></i>
+        <span><b>Analógica Escolar:</b> La RAM es tu <b>cuaderno borrador</b> (rápido pero efímero) y el almacenamiento secundario es la <b>biblioteca</b>.</span>
+      </div>
+    </div>
+
+    <!-- SLIDE 6: BLOQUE 4 - SALIDA DE DATOS (OUTPUT) -->
+    <div class="slide flex-col justify-between w-full h-full glass-card rounded-3xl p-6 sm:p-10 overflow-y-auto">
+      <div>
+        <span class="text-xs font-bold text-emerald-400 uppercase tracking-widest block mb-1">Bloque 04 del Modelo</span>
+        <h2 class="text-2xl sm:text-3xl font-bold font-display text-white flex items-center gap-3">
+          <i class="fa-solid fa-desktop text-emerald-400"></i> Salida de Datos (Output)
+        </h2>
+        <p class="text-slate-300 text-xs sm:text-sm mt-1">El resultado del procesamiento se traduce nuevamente en fenómenos del mundo físico.</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-5 my-3">
+        
+        <!-- Human Output -->
+        <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl space-y-3">
+          <h3 class="font-bold text-xs sm:text-sm text-emerald-400 flex items-center gap-2">
+            <i class="fa-solid fa-eye"></i> Salida Perceptible para Seres Humanos
+          </h3>
+          <ul class="text-xs text-slate-300 space-y-2 list-disc pl-4">
+            <li><b>Visual:</b> Pantallas OLED/LCD, proyectores, matrices LED de Micro:bit.</li>
+            <li><b>Auditiva:</b> Parlantes, auriculares, zumbadores de tono piezoeléctrico.</li>
+            <li><b>Táctil/Háptica:</b> Motores de vibración en mandos de consola o smartphones.</li>
+          </ul>
+        </div>
+
+        <!-- Physical/Actuators Output -->
+        <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl space-y-3">
+          <h3 class="font-bold text-xs sm:text-sm text-cyan-400 flex items-center gap-2">
+            <i class="fa-solid fa-gears"></i> Salida Mecánica / Actuadores
+          </h3>
+          <ul class="text-xs text-slate-300 space-y-2 list-disc pl-4">
+            <li><b>Movimiento:</b> Servomotores de brazos robóticos o persianas automatizadas.</li>
+            <li><b>Acción Térmica/Física:</b> Encendido de relés, bombas de agua o luces de tráfico.</li>
+            <li><b>Digital Externa:</b> Envío de datos a otro servidor o nube vía red Wi-Fi.</li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="bg-slate-900/90 border border-slate-800 p-4 rounded-2xl flex items-center gap-3">
+        <i class="fa-solid fa-lightbulb text-amber-400 text-xl"></i>
+        <p class="text-xs text-slate-300">
+          <b>Sin la etapa de salida</b>, el trabajo del procesador quedaría "atrapado" dentro del chip sin generar ningún impacto en el usuario ni en su entorno.
+        </p>
+      </div>
+    </div>
+
+    <!-- SLIDE 7: DIAGRAMA INTEGRADOR INTERACTIVO E-P-A-S -->
+    <div class="slide flex-col justify-between w-full h-full glass-card rounded-3xl p-6 sm:p-10 overflow-y-auto">
+      <div>
+        <span class="text-xs font-bold text-sky-400 uppercase tracking-widest block mb-1">Simulador de Flujo de Información</span>
+        <h2 class="text-2xl sm:text-3xl font-bold font-display text-white">Ciclo E-P-A-S en Acción</h2>
+        <p class="text-slate-300 text-xs sm:text-sm mt-1">Elige un escenario real y presiona los nodos del diagrama para ver el recorrido paso a paso de los datos:</p>
+      </div>
+
+      <!-- Case Selection Tabs -->
+      <div class="flex gap-2 my-2">
+        <button onclick="setSimCase('facial')" id="tab-facial" class="sim-tab px-4 py-2 rounded-xl text-xs font-bold bg-sky-500 text-slate-950 transition">
+          <i class="fa-solid fa-face-smile mr-1"></i> Reconocimiento Facial en Smartphone
+        </button>
+        <button onclick="setSimCase('light')" id="tab-light" class="sim-tab px-4 py-2 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700 transition">
+          <i class="fa-solid fa-sun mr-1"></i> Luz Automática con Micro:bit
+        </button>
+      </div>
+
+      <!-- Flow Diagram Interactive -->
+      <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 my-3">
+        
+        <!-- Node 1: Entrada -->
+        <button onclick="inspectNode('input')" class="glass-card-interactive node-glow p-4 rounded-2xl text-left border-sky-500/50">
+          <span class="text-[10px] uppercase font-bold text-sky-400 block mb-1">Paso 1: Entrada</span>
+          <h4 id="node-input-title" class="font-bold text-xs text-white mb-1">Cámara Infrarroja</h4>
+          <p id="node-input-desc" class="text-[11px] text-slate-400">Captura la matriz de puntos del rostro.</p>
+        </button>
+
+        <!-- Node 2: Almacenamiento -->
+        <button onclick="inspectNode('storage')" class="glass-card-interactive p-4 rounded-2xl text-left border-amber-500/50">
+          <span class="text-[10px] uppercase font-bold text-amber-400 block mb-1">Paso 2: Memoria</span>
+          <h4 id="node-storage-title" class="font-bold text-xs text-white mb-1">Memoria RAM / Chip Seguro</h4>
+          <p id="node-storage-desc" class="text-[11px] text-slate-400">Carga el patrón del dueño guardado.</p>
+        </button>
+
+        <!-- Node 3: Procesamiento -->
+        <button onclick="inspectNode('process')" class="glass-card-interactive p-4 rounded-2xl text-left border-purple-500/50">
+          <span class="text-[10px] uppercase font-bold text-purple-400 block mb-1">Paso 3: Proceso</span>
+          <h4 id="node-process-title" class="font-bold text-xs text-white mb-1">Algoritmo NPU / CPU</h4>
+          <p id="node-process-desc" class="text-[11px] text-slate-400">Compara los patrones vectoriales.</p>
+        </button>
+
+        <!-- Node 4: Salida -->
+        <button onclick="inspectNode('output')" class="glass-card-interactive p-4 rounded-2xl text-left border-emerald-500/50">
+          <span class="text-[10px] uppercase font-bold text-emerald-400 block mb-1">Paso 4: Salida</span>
+          <h4 id="node-output-title" class="font-bold text-xs text-white mb-1">Pantalla y Candado</h4>
+          <p id="node-output-desc" class="text-[11px] text-slate-400">Desbloquea el teléfono y emite un tono.</p>
+        </button>
+
+      </div>
+
+      <!-- Node Detail Box -->
+      <div id="node-detail-box" class="bg-slate-900/90 border border-slate-800 p-4 rounded-2xl text-xs text-slate-300">
+        Haz clic en cualquiera de los 4 pasos superiores para inspeccionar los detalles técnicos.
+      </div>
+    </div>
+
+    <!-- SLIDE 8: CONSIGNA DE CIERRE (PREGUNTAS OBLIGATORIAS CANVA) -->
+    <div class="slide flex-col justify-between w-full h-full glass-card rounded-3xl p-6 sm:p-10 overflow-y-auto">
+      <div>
+        <span class="text-xs font-bold text-purple-400 uppercase tracking-widest block mb-1">Trabajo Práctico Entregable</span>
+        <h2 class="text-2xl sm:text-3xl font-bold font-display text-white flex items-center gap-2">
+          <i class="fa-solid fa-pen-to-square text-purple-400"></i> Consigna de Evaluación en Canva / Genially
+        </h2>
+        <p class="text-slate-300 text-xs sm:text-sm mt-1">En parejas, elaboren una presentación visual que responda a las siguientes <b>4 Preguntas Clave</b>:</p>
+      </div>
+
+      <!-- 4 Mandatory Questions Grid -->
+      <div class="grid sm:grid-cols-2 gap-3.5 my-3">
+        
+        <!-- Q1 -->
+        <div class="bg-slate-900/80 border border-slate-800 p-3.5 rounded-2xl">
+          <span class="text-[10px] font-bold text-sky-400 bg-sky-500/10 px-2 py-0.5 rounded border border-sky-500/30">Pregunta 1</span>
+          <h4 class="font-bold text-xs text-white mt-1.5 mb-1">Abstracción en Dispositivos</h4>
+          <p class="text-[11px] text-slate-300 leading-relaxed">¿Por qué un <b>smartwatch</b> o un <b>auto moderno</b> se consideran "computadoras" bajo este concepto abstracto?</p>
+        </div>
+
+        <!-- Q2 -->
+        <div class="bg-slate-900/80 border border-slate-800 p-3.5 rounded-2xl">
+          <span class="text-[10px] font-bold text-purple-400 bg-purple-500/10 px-2 py-0.5 rounded border border-purple-500/30">Pregunta 2</span>
+          <h4 class="font-bold text-xs text-white mt-1.5 mb-1">Diagrama E-P-A-S Cotidiano</h4>
+          <p class="text-[11px] text-slate-300 leading-relaxed">Elige un dispositivo cotidiano y diagramá paso a paso su ciclo de <b>Entrada, Procesamiento, Almacenamiento y Salida</b>.</p>
+        </div>
+
+        <!-- Q3 -->
+        <div class="bg-slate-900/80 border border-slate-800 p-3.5 rounded-2xl">
+          <span class="text-[10px] font-bold text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/30">Pregunta 3</span>
+          <h4 class="font-bold text-xs text-white mt-1.5 mb-1">RAM vs Almacenamiento</h4>
+          <p class="text-[11px] text-slate-300 leading-relaxed">¿Qué diferencia fundamental existe entre la RAM y el Disco, y qué ocurre si te quedas sin memoria RAM mientras juegas o editas?</p>
+        </div>
+
+        <!-- Q4 -->
+        <div class="bg-slate-900/80 border border-slate-800 p-3.5 rounded-2xl">
+          <span class="text-[10px] font-bold text-rose-400 bg-rose-500/10 px-2 py-0.5 rounded border border-rose-500/30">Pregunta 4</span>
+          <h4 class="font-bold text-xs text-white mt-1.5 mb-1">Desafío Crítico de Reflexión</h4>
+          <p class="text-[11px] text-slate-300 leading-relaxed">¿Puede existir una computadora que procese información sin tener ningún dispositivo de entrada o salida? Fundamenta tu respuesta.</p>
+        </div>
+
+      </div>
+
+      <div class="p-3 bg-purple-500/10 border border-purple-500/30 rounded-xl text-xs text-purple-300 flex items-center justify-between">
+        <span><b>Formato de Entrega:</b> Compartir el enlace de lectura de Canva o Genially en la tarea correspondiente de CREA.</span>
+        <i class="fa-solid fa-cloud-arrow-up text-base"></i>
+      </div>
+    </div>
+
+    <!-- SLIDE 9: RÚBRICA DE EVALUACIÓN (ESCALA 1 A 10 ANEP) -->
+    <div class="slide flex-col justify-between w-full h-full glass-card rounded-3xl p-6 sm:p-10 overflow-y-auto">
+      <div>
+        <span class="text-xs font-bold text-emerald-400 uppercase tracking-widest block mb-1">Criterios de Evaluación</span>
+        <h2 class="text-2xl sm:text-3xl font-bold font-display text-white flex items-center gap-2">
+          <i class="fa-solid fa-award text-emerald-400"></i> Rúbrica de Evaluación Docente (ANEP 1 a 10 pts)
+        </h2>
+        <p class="text-slate-300 text-xs sm:text-sm mt-1">Pauta para valorar el trabajo en Canva/Genially presentado por los estudiantes:</p>
+      </div>
+
+      <div class="space-y-3 my-3">
+        
+        <!-- Excelente -->
+        <div class="p-3.5 bg-emerald-500/10 border border-emerald-500/40 rounded-2xl flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
+          <div>
+            <span class="font-bold text-emerald-400 text-xs sm:text-sm uppercase tracking-wider block">Excelente (8 - 10 Puntos)</span>
+            <p class="text-xs text-slate-300 mt-0.5">Domina con fluidez el modelo abstracto E-P-A-S, responde rigurosamente las 4 preguntas con pensamiento crítico y presenta un diagrama visualmente claro e impecable en Canva.</p>
+          </div>
+          <span class="bg-emerald-500 text-slate-950 font-bold font-mono text-xs px-3 py-1 rounded-full shrink-0">8 - 10 pts</span>
+        </div>
+
+        <!-- Aceptable -->
+        <div class="p-3.5 bg-sky-500/10 border border-sky-500/40 rounded-2xl flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
+          <div>
+            <span class="font-bold text-sky-400 text-xs sm:text-sm uppercase tracking-wider block">Aceptable (5 - 7 Puntos)</span>
+            <p class="text-xs text-slate-300 mt-0.5">Comprende la relación entre Entrada, Procesamiento, Almacenamiento y Salida. Responde las preguntas de forma correcta y el trabajo visual cumple adecuadamente las pautas.</p>
+          </div>
+          <span class="bg-sky-400 text-slate-950 font-bold font-mono text-xs px-3 py-1 rounded-full shrink-0">5 - 7 pts</span>
+        </div>
+
+        <!-- A Mejorar -->
+        <div class="p-3.5 bg-rose-500/10 border border-rose-500/40 rounded-2xl flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
+          <div>
+            <span class="font-bold text-rose-400 text-xs sm:text-sm uppercase tracking-wider block">A Mejorar (1 - 4 Puntos)</span>
+            <p class="text-xs text-slate-300 mt-0.5">Confunde los bloques del modelo abstracto (ej: confunde memoria RAM con entrada), las respuestas a las preguntas son incompletas o la presentación carece de orden.</p>
+          </div>
+          <span class="bg-rose-500 text-slate-950 font-bold font-mono text-xs px-3 py-1 rounded-full shrink-0">1 - 4 pts</span>
+        </div>
+
+      </div>
+
+      <div class="p-3 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-400 text-center">
+        Recuerden revisar la rúbrica con su equipo antes de compartir el enlace final en CREA.
+      </div>
+    </div>
+
+  </main>
+
+  <!-- BOTTOM NAVIGATION CONTROL BAR -->
+  <footer class="w-full bg-slate-950/80 backdrop-blur-md border-t border-slate-800/80 px-6 py-3 flex justify-between items-center z-50">
+    <button id="prev-btn" onclick="prevSlide()" class="px-5 py-2.5 rounded-2xl border border-slate-700 bg-slate-900 text-slate-300 hover:bg-slate-800 font-bold text-xs sm:text-sm transition flex items-center gap-2 disabled:opacity-30 disabled:cursor-not-allowed">
+      <i class="fa-solid fa-arrow-left"></i> Anterior
+    </button>
+
+    <!-- Slide Dots Container -->
+    <div class="hidden sm:flex gap-2" id="dots-container">
+      <!-- Dots injected dynamically via JS -->
+    </div>
+
+    <button id="next-btn" onclick="nextSlide()" class="px-6 py-2.5 rounded-2xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-slate-950 font-bold text-xs sm:text-sm transition flex items-center gap-2 shadow-lg shadow-sky-500/20">
+      Siguiente <i class="fa-solid fa-arrow-right"></i>
+    </button>
+  </footer>
+
+  <!-- JAVASCRIPT STATE AND INTERACTIVITY LOGIC -->
+  <script>
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const totalSlides = slides.length;
+
+    // Devices Database for Slide 2
+    const devicesData = {
+      smartphone: {
+        title: "Smartphone",
+        input: "Pantalla táctil, micrófono, cámaras, sensores de giroscopio y GPS.",
+        process: "Procesador de múltiples núcleos (SoC ARM) calculando gráficos y apps.",
+        storage: "Memoria RAM (6-12 GB) para apps abiertas + Almacenamiento Flash (128-512 GB).",
+        output: "Pantalla AMOLED, altavoces estéreo, motor de vibración háptico."
+      },
+      microbit: {
+        title: "Placa Micro:bit V2",
+        input: "Botones A y B, sensor de luz LED, acelerómetro, micrófono y pines táctiles.",
+        process: "Microcontrolador Nordic ARM Cortex-M4 ejecutando tu código de MakeCode.",
+        storage: "Memoria RAM (128 KB) + Memoria Flash (512 KB) donde se guarda tu programa.",
+        output: "Matriz de 5x5 LEDs rojos, parlante integrado y pines de salida de voltaje."
+      },
+      smartwatch: {
+        title: "Reloj Inteligente (Smartwatch)",
+        input: "Sensor óptico de pulso cardíaco, acelerómetro de pasos, pantalla táctil.",
+        process: "Algoritmo de salud que calcula calorías, ritmo cardíaco y pasos recorridos.",
+        storage: "Memoria interna guardando tu historial deportivo del día.",
+        output: "Pantalla circular, alertas por vibración en la muñeca."
+      },
+      traffic: {
+        title: "Semáforo Inteligente de Ciudad",
+        input: "Cámara de visión nocturna y sensores de presión en el asfalto.",
+        process: "Microcontrolador evaluando la densidad de autos para ajustar el tiempo.",
+        storage: "Memoria ROM cargada con los horarios pico de la avenida.",
+        output: "Luces LED (Verde, Amarillo, Rojo) y señal sonora para peatones."
+      },
+      console: {
+        title: "Consola de Videojuegos",
+        input: "Mandos con palancas analógicas, gatillos con sensor de presión, micrófono.",
+        process: "Tarjeta Gráfica (GPU) y CPU renderizando millones de polígonos por segundo.",
+        storage: "Memoria RAM de ultra alta velocidad (GDDR6) + Unidad SSD NVMe.",
+        output: "Señal de video 4K a la TV, audio 3D envolviente, vibración del mando."
+      },
+      washer: {
+        title: "Lavarropas Automático Moderno",
+        input: "Sensor de peso de ropa, sensor de turbidez del agua, panel de botones.",
+        process: "Microprocesador calculando el volumen exacto de agua y tiempo de centrifugado.",
+        storage: "EPROM cargada con los programas de lavado (Algodón, Lana, Rápido).",
+        output: "Motor de centrifugado, válvula de agua, pantalla de minutos restantes."
+      }
+    };
+
+    // Flow Simulation Data for Slide 7
+    const simCases = {
+      facial: {
+        inputTitle: "Cámara Infrarroja",
+        inputDesc: "Proyecta miles de puntos invisibles sobre el rostro.",
+        storageTitle: "RAM / Enclave Seguro",
+        storageDesc: "Carga de memoria el patrón biométrico del dueño.",
+        processTitle: "Procesador NPU",
+        processDesc: "Compara matemáticamente las distancias vectoriales.",
+        outputTitle: "Pantalla y Motor",
+        outputDesc: "Muestra el candado abierto y desbloquea el sistema."
+      },
+      light: {
+        inputTitle: "Sensor de Luz Micro:bit",
+        inputDesc: "Mide el nivel de luminosidad ambiente (0 a 255).",
+        storageTitle: "Memoria Flash",
+        storageDesc: "Mantiene en memoria la variable 'umbral = 50'.",
+        processTitle: "Microprocesador ARM",
+        processDesc: "Evalúa la condición 'SI luz < 50 ENTONCES...'",
+        outputTitle: "Matriz LED 5x5",
+        outputDesc: "Enciende todos los LEDs a máxima potencia."
+      }
+    };
+
+    // Initialize Slide Dots
+    const dotsContainer = document.getElementById('dots-container');
+    for (let i = 0; i < totalSlides; i++) {
+      const dot = document.createElement('button');
+      dot.className = `w-2.5 h-2.5 rounded-full transition-all ${i === 0 ? 'bg-sky-400 w-6' : 'bg-slate-700 hover:bg-slate-500'}`;
+      dot.onclick = () => goToSlide(i);
+      dotsContainer.appendChild(dot);
+    }
+
+    function updateSlideUI() {
+      slides.forEach((slide, idx) => {
+        if (idx === currentSlide) slide.classList.add('active');
+        else slide.classList.remove('active');
+      });
+
+      document.getElementById('slide-number').innerText = `Slide ${currentSlide + 1} de ${totalSlides}`;
+      document.getElementById('progress-bar').style.width = `${((currentSlide + 1) / totalSlides) * 100}%`;
+
+      document.getElementById('prev-btn').disabled = (currentSlide === 0);
+      const nextBtn = document.getElementById('next-btn');
+      if (currentSlide === totalSlides - 1) {
+        nextBtn.innerHTML = '¡Finalizar! <i class="fa-solid fa-check"></i>';
+        nextBtn.className = 'px-6 py-2.5 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs sm:text-sm transition flex items-center gap-2 shadow-lg shadow-emerald-500/20';
+      } else {
+        nextBtn.innerHTML = 'Siguiente <i class="fa-solid fa-arrow-right"></i>';
+        nextBtn.className = 'px-6 py-2.5 rounded-2xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-slate-950 font-bold text-xs sm:text-sm transition flex items-center gap-2 shadow-lg shadow-sky-500/20';
+      }
+
+      const dots = dotsContainer.children;
+      for (let i = 0; i < dots.length; i++) {
+        dots[i].className = `w-2.5 h-2.5 rounded-full transition-all ${i === currentSlide ? 'bg-sky-400 w-6' : 'bg-slate-700 hover:bg-slate-500'}`;
+      }
+    }
+
+    function goToSlide(index) {
+      currentSlide = index;
+      updateSlideUI();
+    }
+
+    function nextSlide() {
+      if (currentSlide < totalSlides - 1) {
+        currentSlide++;
+        updateSlideUI();
+      }
+    }
+
+    function prevSlide() {
+      if (currentSlide > 0) {
+        currentSlide--;
+        updateSlideUI();
+      }
+    }
+
+    // Keyboard Arrow Navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === 'Space') nextSlide();
+      else if (e.key === 'ArrowLeft') prevSlide();
+    });
+
+    // Device Explorer Function for Slide 2
+    function selectDevice(devKey) {
+      document.querySelectorAll('.dev-btn').forEach(btn => btn.classList.remove('border-sky-500', 'bg-sky-500/10'));
+      const activeBtn = document.getElementById(`dev-${devKey}`);
+      if (activeBtn) activeBtn.classList.add('border-sky-500', 'bg-sky-500/10');
+
+      const data = devicesData[devKey];
+      const box = document.getElementById('device-info-box');
+      box.innerHTML = `
+        <h4 class="font-bold text-sm text-sky-400 mb-2 flex items-center gap-2">
+          <i class="fa-solid fa-microchip"></i> Modelo Abstracto de: ${data.title}
+        </h4>
+        <div class="grid sm:grid-cols-4 gap-3 text-xs">
+          <div class="p-2.5 bg-slate-950/60 rounded-xl border border-sky-500/30">
+            <b class="text-sky-400 block mb-1">1. Entrada:</b>
+            <span class="text-slate-300">${data.input}</span>
+          </div>
+          <div class="p-2.5 bg-slate-950/60 rounded-xl border border-purple-500/30">
+            <b class="text-purple-400 block mb-1">2. Procesamiento:</b>
+            <span class="text-slate-300">${data.process}</span>
+          </div>
+          <div class="p-2.5 bg-slate-950/60 rounded-xl border border-amber-500/30">
+            <b class="text-amber-400 block mb-1">3. Almacenamiento:</b>
+            <span class="text-slate-300">${data.storage}</span>
+          </div>
+          <div class="p-2.5 bg-slate-950/60 rounded-xl border border-emerald-500/30">
+            <b class="text-emerald-400 block mb-1">4. Salida:</b>
+            <span class="text-slate-300">${data.output}</span>
+          </div>
+        </div>
+      `;
+    }
+
+    // Binary Converter Widget for Slide 3
+    function updateBinaryConverter(val) {
+      document.getElementById('adc-val').innerText = val;
+      document.getElementById('adc-bin').innerText = Number(val).toString(2).padStart(8, '0');
+    }
+
+    // Flow Simulation Case Setter for Slide 7
+    function setSimCase(caseKey) {
+      const data = simCases[caseKey];
+      document.getElementById('node-input-title').innerText = data.inputTitle;
+      document.getElementById('node-input-desc').innerText = data.inputDesc;
+
+      document.getElementById('node-storage-title').innerText = data.storageTitle;
+      document.getElementById('node-storage-desc').innerText = data.storageDesc;
+
+      document.getElementById('node-process-title').innerText = data.processTitle;
+      document.getElementById('node-process-desc').innerText = data.processDesc;
+
+      document.getElementById('node-output-title').innerText = data.outputTitle;
+      document.getElementById('node-output-desc').innerText = data.outputDesc;
+
+      if (caseKey === 'facial') {
+        document.getElementById('tab-facial').className = "sim-tab px-4 py-2 rounded-xl text-xs font-bold bg-sky-500 text-slate-950 transition";
+        document.getElementById('tab-light').className = "sim-tab px-4 py-2 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700 transition";
+      } else {
+        document.getElementById('tab-light').className = "sim-tab px-4 py-2 rounded-xl text-xs font-bold bg-sky-500 text-slate-950 transition";
+        document.getElementById('tab-facial').className = "sim-tab px-4 py-2 rounded-xl text-xs font-bold bg-slate-800 text-slate-300 hover:bg-slate-700 transition";
+      }
+
+      document.getElementById('node-detail-box').innerText = "Simulador actualizado. Haz clic en cualquiera de los 4 pasos superiores para inspeccionar los detalles técnicos.";
+    }
+
+    function inspectNode(nodeType) {
+      const box = document.getElementById('node-detail-box');
+      if (nodeType === 'input') {
+        box.innerHTML = "<b class='text-sky-400'>Detalle de Entrada:</b> El componente captura fenómenos físicos analógicos y los digitaliza en matrices de ceros y unos para enviarlos por el bus de datos hacia el procesador.";
+      } else if (nodeType === 'storage') {
+        box.innerHTML = "<b class='text-amber-400'>Detalle de Memoria:</b> Los datos de entrada se colocan temporalmente en registros de alta velocidad antes y durante el cálculo matemático del procesador.";
+      } else if (nodeType === 'process') {
+        box.innerHTML = "<b class='text-purple-400'>Detalle de Procesamiento:</b> La ALU y los núcleos del procesador aplican el algoritmo guardado paso a paso a una velocidad de gigahertz (GHz).";
+      } else if (nodeType === 'output') {
+        box.innerHTML = "<b class='text-emerald-400'>Detalle de Salida:</b> El resultado binario procesado se convierte en voltajes que activan píxeles en pantalla, sonido en parlantes o movimiento en motores.";
+      }
+    }
+
+    // Initialize Default Views
+    selectDevice('smartphone');
+    updateSlideUI();
+  </script>
+</body>
+</html>
